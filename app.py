@@ -13,7 +13,7 @@ def home():
 # content generator
 @app.get("/generate_content")
 def content(prompt: str):
-    return {"result": generate_content(prompt)}
+    return {"result": generate_content(prompt, "social media")}
 
 # strategy generator
 @app.get("/strategy")
