@@ -1,18 +1,16 @@
-import requests
+import os
+from openai import OpenAI
 
-# FREE AI API (no key needed for testing)
-API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def generate_content(prompt):
+def generate_content(topic, platform):
+    prompt = f"Create high converting {platform} marketing content for {topic}"
 
-    payload = {
-        "inputs": f"Write marketing content for: {prompt}"
-    }
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
 
-    response = requests.post(API_URL, json=payload)
-
-    try:
-        return response.json()[0]["generated_text"]
-    except:
-        return "AI error. Try again."
-
+    return response.choices[0].message.content
