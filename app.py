@@ -1,19 +1,25 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 from ai.content_ai import generate_content
 from ai.strategy_ai import generate_strategy
 from ai.proposal_ai import create_proposal
 from crm.crm_store import add_client, get_clients
 
-app = FastAPI(title="AI Marketing Command Center")
+app = FastAPI()
+
+class ContentRequest(BaseModel):
+    topic: str
+    platform: str
 
 @app.get("/")
 def home():
     return {"status": "AI Marketing Command Center Running"}
 
 # content generator
-@app.get("/generate_content")
-def content(prompt: str):
-    return {"result": generate_content(prompt, "social media")}
+@app.post("/generate")
+def content(data: ContentRequest):
+    result = generate_content(data.topic, data.platform)
+    return {"result": result}
 
 # strategy generator
 @app.get("/strategy")
